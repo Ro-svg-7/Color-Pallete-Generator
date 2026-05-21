@@ -4,7 +4,7 @@ from tkinterdnd2 import TkinterDnD, DND_FILES
 
 root = TkinterDnD.Tk()
 root.title("Color Pallete Generator")
-root.geometry("700x650")
+root.geometry("800x750")
 root.configure(bg="#F5FFFA")
 
 selected_img = tk.StringVar()
@@ -22,18 +22,25 @@ title_label = tk.Label(
 )
 title_label.pack(pady=(25,35))
 
-drop_label = tk.Label(
+drop_frame = tk.Frame(
     root,
-    text="Drag and Drop your image here",
-    font=("Arial", 15, "bold"),
+    width=500,
+    height=350,
     bg="#B0E0E6",
-    fg="black",
-    width=50,
-    height=8,
     relief="ridge",
     bd=3
 )
-drop_label.pack(pady=(10,40))
+drop_frame.pack(pady=(10,40))
+drop_frame.pack_propagate(False)
+
+drop_label = tk.Label(
+    drop_frame,
+    text="Drag and Drop your image here",
+    font=("Arial", 15, "bold"),
+    bg="#B0E0E6",
+    fg="black"
+)
+drop_label.pack(expand=True)
 drop_label.drop_target_register(DND_FILES)
 drop_label.dnd_bind("<<Drop>>")
 
