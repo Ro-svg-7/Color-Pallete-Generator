@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
 from tkinterdnd2 import TkinterDnD, DND_FILES
+from PIL import Image, ImageTk
 
 root = TkinterDnD.Tk()
 root.title("Color Pallete Generator")
@@ -12,6 +13,30 @@ status_text = tk.StringVar()
 
 selected_img.set("No image selected")
 status_text.set("Waiting for the img...")
+
+def show_image(filepath):
+    img = Image.open(filepath)
+    img.thumbnail((480,320))
+
+    photo = ImageTk.PhotoImage(img)
+    drop_label.config(image = photo, text="")
+    drop_label.image = photo
+
+    status_text.set("Image upload successful!")
+
+def upload_img():
+    filepath = filedialog.askopenfilename(
+        filetypes=[("Image Files", "*.png, *.jpg, *.jpeg")]
+    )
+    if filepath:
+        selected_img.set(filepath)
+        show_image(filepath)
+
+def drop_img(event):
+    filepath = event.data.strip("{}")
+    filepath = filepath.replace("{","").replace("}","")
+    selected_img.set(filepath)
+    show_image(filepath)
 
 title_label = tk.Label(
     root,
@@ -32,6 +57,8 @@ drop_frame = tk.Frame(
 )
 drop_frame.pack(pady=(10,40))
 drop_frame.pack_propagate(False)
+drop_frame.drop_target_register(DND_FILES)
+drop_frame.dnd_bind("<<Drop>>", drop_img)
 
 drop_label = tk.Label(
     drop_frame,
@@ -40,9 +67,9 @@ drop_label = tk.Label(
     bg="#B0E0E6",
     fg="black"
 )
-drop_label.pack(expand=True)
+drop_label.pack(fill="both",expand=True)
 drop_label.drop_target_register(DND_FILES)
-drop_label.dnd_bind("<<Drop>>")
+drop_label.dnd_bind("<<Drop>>", drop_img)
 
 upload_button = tk.Button(
     root,
@@ -52,7 +79,8 @@ upload_button = tk.Button(
     fg="black",
     activebackground="lightgrey",
     padx=25,
-    pady=12
+    pady=12,
+    command=upload_img
 )
 upload_button.pack(pady=(0,30))
 
