@@ -39,6 +39,13 @@ def drop_img(event):
     selected_img.set(filepath)
     show_image(filepath)
 
+def copy_code(hex_code):
+    root.clipboard_clear()
+    root.clipboard_append(hex_code)
+
+    status_text.set(f"Copied {hex_code}")
+
+
 def extract_colors(filepath):
     colors = colorgram.extract(filepath,6)
 
@@ -77,11 +84,17 @@ def display_colors(hex_codes):
         widget.destroy()
     
     pallete_frame.pack(pady=20)
+    palette_row = tk.Frame(
+        pallete_frame,
+        bg="#F5FFFA"
+    )
+    palette_row.pack()
     reset_button.pack(pady=20)
+    copy_hint_label.pack(pady=20)
 
     for color in hex_codes:
         color_frame = tk.Frame(
-            pallete_frame,
+            palette_row,
             bg="#F5FFFA"
         )
         color_frame.pack(side="left", padx=10)
@@ -99,13 +112,29 @@ def display_colors(hex_codes):
         hex_label = tk.Label(
             color_frame,
             text=color,
-            font=("Arial", 10, "bold"),
-            bg="#F5FFFA"
+            font=("Arial", 14, "bold"),
+            bg="#F5FFFA",
+            fg="blue",
+            cursor="hand2"
         )
         hex_label.pack(pady=5)
+
+        hex_label.bind(
+            "<Button-1>",
+            lambda e, c=color: copy_code(c)
+        )
+        hex_label.bind(
+            "<Enter>",
+            lambda e: e.widget.config(font=("Arial", 10, "bold", "underline"))
+        )
+        hex_label.bind(
+            "<Leave>",
+            lambda e: e.widget.config(font=("Arial", 10, "bold"))
+        )
     
 def reset_app():
     pallete_frame.pack_forget()
+    copy_hint_label.pack_forget()
 
     drop_frame.pack(pady=(10,40))
 
@@ -114,7 +143,7 @@ def reset_app():
         text="Drag and Drop your image Here"
     )
     drop_label.image=None
-    selected_img.set("No image selected...")
+    selected_img.set("No image selected")
     status_text.set("Waiting for the Image...")
 
     upload_button.pack(pady=(0,30))
@@ -197,7 +226,6 @@ reset_button = tk.Button(
     command=reset_app
 )
 
-
 status_label = tk.Label(
     root,
     textvariable=status_text,
@@ -207,6 +235,12 @@ status_label = tk.Label(
 )
 status_label.pack(pady=(20,0))
 
-
+copy_hint_label = tk.Label(
+    root,
+    text="☝️ Click any hex code to copy it",
+    font=("Arial", 12, "italic"),
+    bg="#F5FFFA",
+    fg="#666666"
+)
 
 root.mainloop()
