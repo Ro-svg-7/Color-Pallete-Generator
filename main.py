@@ -70,11 +70,14 @@ def generate_pallete():
 
 def display_colors(hex_codes):
     drop_frame.pack_forget()
+    upload_button.pack_forget()
+    generate_button.pack_forget()
 
     for widget in pallete_frame.winfo_children():
         widget.destroy()
     
     pallete_frame.pack(pady=20)
+    reset_button.pack(pady=20)
 
     for color in hex_codes:
         color_frame = tk.Frame(
@@ -100,6 +103,24 @@ def display_colors(hex_codes):
             bg="#F5FFFA"
         )
         hex_label.pack(pady=5)
+    
+def reset_app():
+    pallete_frame.pack_forget()
+
+    drop_frame.pack(pady=(10,40))
+
+    drop_label.config(
+        image="",
+        text="Drag and Drop your image Here"
+    )
+    drop_label.image=None
+    selected_img.set("No image selected...")
+    status_text.set("Waiting for the Image...")
+
+    upload_button.pack(pady=(0,30))
+    generate_button.pack(pady=(0,50))
+
+    reset_button.pack_forget()
 
 title_label = tk.Label(
     root,
@@ -165,6 +186,17 @@ generate_button = tk.Button(
     command=generate_pallete
 )
 generate_button.pack(pady=(0,50))
+
+reset_button = tk.Button(
+    root,
+    text="Do it again?😋",
+    bg="#98FB98",
+    fg="black",
+    padx=25,
+    pady=12,
+    command=reset_app
+)
+
 
 status_label = tk.Label(
     root,
