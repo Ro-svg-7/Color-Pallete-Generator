@@ -63,7 +63,43 @@ def generate_pallete():
         status_text.set("Please upload an image first")
         return
     
-    extract_colors(filepath)
+    hex_codes = extract_colors(filepath)
+
+    display_colors(hex_codes)
+    status_text.set("Palette generated!")
+
+def display_colors(hex_codes):
+    drop_frame.pack_forget()
+
+    for widget in pallete_frame.winfo_children():
+        widget.destroy()
+    
+    pallete_frame.pack(pady=20)
+
+    for color in hex_codes:
+        color_frame = tk.Frame(
+            pallete_frame,
+            bg="#F5FFFA"
+        )
+        color_frame.pack(side="left", padx=10)
+
+        color_box = tk.Label(
+            color_frame,
+            bg=color,
+            width=10,
+            height=9,
+            relief="ridge",
+            bd=2
+        )
+        color_box.pack()
+
+        hex_label = tk.Label(
+            color_frame,
+            text=color,
+            font=("Arial", 10, "bold"),
+            bg="#F5FFFA"
+        )
+        hex_label.pack(pady=5)
 
 title_label = tk.Label(
     root,
@@ -86,6 +122,11 @@ drop_frame.pack(pady=(10,40))
 drop_frame.pack_propagate(False)
 drop_frame.drop_target_register(DND_FILES)
 drop_frame.dnd_bind("<<Drop>>", drop_img)
+
+pallete_frame = tk.Frame(
+    root,
+    bg="#F5FFFA"
+)
 
 drop_label = tk.Label(
     drop_frame,
@@ -133,4 +174,7 @@ status_label = tk.Label(
     fg="#1E0FEF"
 )
 status_label.pack(pady=(20,0))
+
+
+
 root.mainloop()
