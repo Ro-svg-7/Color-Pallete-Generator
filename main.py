@@ -1,7 +1,8 @@
 import tkinter as tk
-from tkinter import filedialog, ttk
+from tkinter import filedialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from PIL import Image, ImageTk
+import colorgram
 
 root = TkinterDnD.Tk()
 root.title("Color Pallete Generator")
@@ -26,7 +27,7 @@ def show_image(filepath):
 
 def upload_img():
     filepath = filedialog.askopenfilename(
-        filetypes=[("Image Files", "*.png, *.jpg, *.jpeg")]
+        filetypes=[("Image Files", "*.png *.jpg *.jpeg")]
     )
     if filepath:
         selected_img.set(filepath)
@@ -37,6 +38,32 @@ def drop_img(event):
     filepath = filepath.replace("{","").replace("}","")
     selected_img.set(filepath)
     show_image(filepath)
+
+def extract_colors(filepath):
+    colors = colorgram.extract(filepath,6)
+
+    hex_codes = []
+
+    for color in colors:
+        rgb = color.rgb
+        hex_code = "#{:02x}{:02x}{:02x}".format(
+            rgb.r,
+            rgb.g,
+            rgb.b
+        )
+
+        hex_codes.append(hex_code)
+    
+    print(hex_codes)
+    return hex_codes
+
+def generate_pallete():
+    filepath = selected_img.get()
+    if filepath == "No image selected":
+        status_text.set("Please upload an image first")
+        return
+    
+    extract_colors(filepath)
 
 title_label = tk.Label(
     root,
@@ -93,7 +120,8 @@ generate_button = tk.Button(
     activebackground="#EFE40F",
     relief="flat",
     padx=25,
-    pady=12
+    pady=12,
+    command=generate_pallete
 )
 generate_button.pack(pady=(0,50))
 
