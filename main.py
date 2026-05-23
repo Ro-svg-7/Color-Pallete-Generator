@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import colorgram
 
 root = TkinterDnD.Tk()
-root.title("Color Pallete Generator")
+root.title("Color Palette Generator")
 root.geometry("800x750")
 root.configure(bg="#F5FFFA")
 
